@@ -1,0 +1,10 @@
+[package]
+name = "niguiri"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+libadwaita = "0.7.2"
+niri-ipc = "25.5.0"
+relm4 = { version = "0.9.1", features = ["adw", "libadwaita"] }
+
