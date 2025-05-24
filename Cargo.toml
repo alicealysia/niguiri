@@ -4,7 +4,6 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-libadwaita = "0.7.2"
 niri-config = { git = "https://github.com/YaLTeR/niri/", version = "25.5.0" }
 niri-ipc = { git = "https://github.com/YaLTeR/niri/", version = "25.5.0" }
-relm4 = { version = "0.9.1", features = ["adw", "libadwaita"] }
+relm4 = "0.9.1"

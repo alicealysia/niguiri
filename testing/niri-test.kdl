@@ -1,0 +1,255 @@
+input {
+    keyboard {
+        repeat-delay 600
+        repeat-rate 25
+        track-layout "window"
+        xkb {
+            layout "us,ru"
+            options "grp:win_space_toggle"
+        }
+    }
+
+    touchpad {
+        tap
+        dwt
+        dwtp
+        drag true
+        click-method "clickfinger"
+        accel-speed 0.2
+        accel-profile "flat"
+        scroll-method "two-finger"
+        scroll-button 272
+        tap-button-map "left-middle-right"
+        disabled-on-external-mouse
+        scroll-factor 0.9
+    }
+
+    mouse {
+        natural-scroll
+        accel-speed 0.4
+        accel-profile "flat"
+        scroll-method "no-scroll"
+        scroll-button 273
+        middle-emulation
+        scroll-factor 0.2
+    }
+
+    trackpoint {
+        off
+        natural-scroll
+        accel-speed 0.0
+        accel-profile "flat"
+        scroll-method "on-button-down"
+        scroll-button 274
+    }
+
+    trackball {
+        off
+        natural-scroll
+        accel-speed 0.0
+        accel-profile "flat"
+        scroll-method "edge"
+        scroll-button 275
+        left-handed
+        middle-emulation
+    }
+
+    tablet {
+        map-to-output "eDP-1"
+        calibration-matrix 1.0 2.0 3.0 \
+                           4.0 5.0 6.0
+    }
+
+    touch {
+        map-to-output "eDP-1"
+    }
+
+    disable-power-key-handling
+
+    warp-mouse-to-focus
+    focus-follows-mouse
+    workspace-auto-back-and-forth
+
+    mod-key "Mod5"
+    mod-key-nested "Super"
+}
+
+output "eDP-1" {
+    focus-at-startup
+    scale 2
+    transform "flipped-90"
+    position x=10 y=20
+    mode "1920x1080@144"
+    variable-refresh-rate on-demand=true
+    background-color "rgba(25, 25, 102, 1.0)"
+}
+
+layout {
+    focus-ring {
+        width 5
+        active-color 0 100 200 255
+        inactive-color 255 200 100 0
+        active-gradient from="rgba(10, 20, 30, 1.0)" to="#0080ffff" relative-to="workspace-view"
+    }
+
+    border {
+        width 3
+        inactive-color "rgba(255, 200, 100, 0.0)"
+    }
+
+    shadow {
+        offset x=10 y=-20
+    }
+
+    tab-indicator {
+        width 10
+        position "top"
+    }
+
+    preset-column-widths {
+        proportion 0.25
+        proportion 0.5
+        fixed 960
+        fixed 1280
+    }
+
+    preset-window-heights {
+        proportion 0.25
+        proportion 0.5
+        fixed 960
+        fixed 1280
+    }
+
+    default-column-width { proportion 0.25; }
+
+    gaps 8
+
+    struts {
+        left 1
+        right 2
+        top 3
+    }
+
+    center-focused-column "on-overflow"
+
+    default-column-display "tabbed"
+
+    insert-hint {
+        color "rgb(255, 200, 127)"
+        gradient from="rgba(10, 20, 30, 1.0)" to="#0080ffff" relative-to="workspace-view"
+    }
+}
+
+spawn-at-startup "alacritty" "-e" "fish"
+
+prefer-no-csd
+
+cursor {
+    xcursor-theme "breeze_cursors"
+    xcursor-size 16
+    hide-when-typing
+    hide-after-inactive-ms 3000
+}
+
+screenshot-path "~/Screenshots/screenshot.png"
+
+clipboard {
+    disable-primary
+}
+
+hotkey-overlay {
+    skip-at-startup
+}
+
+animations {
+    slowdown 2.0
+
+    workspace-switch {
+        spring damping-ratio=1.0 stiffness=1000 epsilon=0.0001
+    }
+
+    horizontal-view-movement {
+        duration-ms 100
+        curve "ease-out-expo"
+    }
+
+    window-open { off; }
+}
+
+gestures {
+    dnd-edge-view-scroll {
+        trigger-width 10
+        max-speed 50
+    }
+}
+
+environment {
+    QT_QPA_PLATFORM "wayland"
+    DISPLAY null
+}
+
+window-rule {
+    match app-id=".*alacritty"
+    exclude title="~"
+    exclude is-active=true is-focused=false
+
+    open-on-output "eDP-1"
+    open-maximized true
+    open-fullscreen false
+    open-floating false
+    open-focused true
+    default-window-height { fixed 500; }
+    default-column-display "tabbed"
+    default-floating-position x=100 y=-200 relative-to="bottom-left"
+
+    focus-ring {
+        off
+        width 3
+    }
+
+    border {
+        on
+        width 8.5
+    }
+
+    tab-indicator {
+        active-color "#f00"
+    }
+}
+
+layer-rule {
+    match namespace="^notifications$"
+    block-out-from "screencast"
+}
+
+binds {
+    Mod+Escape hotkey-overlay-title="Inhibit" { toggle-keyboard-shortcuts-inhibit; }
+    Mod+Shift+Escape allow-inhibiting=true { toggle-keyboard-shortcuts-inhibit; }
+    Mod+T allow-when-locked=true { spawn "alacritty"; }
+    Mod+Q hotkey-overlay-title=null { close-window; }
+    Mod+Shift+H { focus-monitor-left; }
+    Mod+Shift+O { focus-monitor "eDP-1"; }
+    Mod+Ctrl+Shift+L { move-window-to-monitor-right; }
+    Mod+Ctrl+Alt+O { move-window-to-monitor "eDP-1"; }
+    Mod+Ctrl+Alt+P { move-column-to-monitor "DP-1"; }
+    Mod+Comma { consume-window-into-column; }
+    Mod+1 { focus-workspace 1; }
+    Mod+Shift+1 { focus-workspace "workspace-1"; }
+    Mod+Shift+E allow-inhibiting=false { quit skip-confirmation=true; }
+    Mod+WheelScrollDown cooldown-ms=150 { focus-workspace-down; }
+}
+
+switch-events {
+    tablet-mode-on { spawn "bash" "-c" "gsettings set org.gnome.desktop.a11y.applications screen-keyboard-enabled true"; }
+    tablet-mode-off { spawn "bash" "-c" "gsettings set org.gnome.desktop.a11y.applications screen-keyboard-enabled false"; }
+}
+
+debug {
+    render-drm-device "/dev/dri/renderD129"
+}
+
+workspace "workspace-1" {
+    open-on-output "eDP-1"
+}
+workspace "workspace-2"
+workspace "workspace-3"
