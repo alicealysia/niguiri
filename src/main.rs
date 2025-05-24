@@ -1,5 +1,4 @@
 use std::path::Path;
-use gtk::prelude::*;
 use relm4::prelude::*;
 use niri_config::Config;
 
@@ -8,9 +7,9 @@ struct App {
 }
 
 impl SimpleComponent for App {
-    type Init = &'static str;
     type Input = ();
     type Output = ();
+    type Init = &'static str;
     type Root = gtk::Window;
     type Widgets = (gtk::Stack, gtk::StackSidebar);
 
@@ -27,6 +26,8 @@ impl SimpleComponent for App {
         let model = Self {
             config: Config::load(Path::new(init)).unwrap_or_default()
         };
+        
+        println!("{:?}", model.config);
 
         let stack = gtk::Stack::builder().build();
         let sidebar = gtk::StackSidebar::builder().build();
